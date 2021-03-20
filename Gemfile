@@ -56,3 +56,4 @@ gem 'line-bot-api'
 gem 'pry-rails'
 gem 'dotenv-rails'
 gem 'selenium-webdriver'
+gem 'rails_12factor', group: :production
