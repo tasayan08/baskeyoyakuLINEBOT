@@ -14,12 +14,12 @@
 
 ## 予約をする際の工程
 
-・サイトにログイン
-・スポーツ種目・体育館選択
-・日付を選択（抽選で二ヶ月後の枠に申し込む仕様）
-⇨ 土日のみの活動なので、その曜日に絞り込む。
-※当選確率を上げるために、共に運営してる仲間数人で申し込むのですが、その際に当選日をそれぞれ満遍なく振り分けたいので、土日をランダムに申し込む。
-これらの過程を自動化しました。
+- サイトにログイン
+- スポーツ種目・体育館選択
+- 日付を選択（抽選で二ヶ月後の枠に申し込む仕様）
+- 土日のみの活動なので、その曜日に絞り込む。
+- ※当選確率を上げるために、共に運営してる仲間数人で申し込むのですが、その際に当選日をそれぞれ満遍なく振り分けたいので、土日をランダムに申し込む。
+- これらの過程を自動化しました。
 
 ### ターゲットユーザー
 
@@ -27,12 +27,12 @@
 
 ### 開発環境
 
-・Rails 6.0.3.4
-・HTML,CSS,JavaScript,Ruby,
-・PostgreSQL
-・Ruby on Rails
-・VSCode
-・heroku
-・LINE Messaging API
-・Google Chrome バージョン: 89.0.4389.90
-・selenium-webdriver
+- Rails 6.0.3.4
+- HTML,CSS,JavaScript,Ruby,
+- PostgreSQL
+- Ruby on Rails
+- VSCode
+- heroku
+- LINE Messaging API
+- Google Chrome バージョン: 89.0.4389.90
+- selenium-webdriver
