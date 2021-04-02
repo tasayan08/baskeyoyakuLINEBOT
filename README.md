@@ -1,24 +1,33 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+##【アプリ名】
+オーパス体育館自動予約bot
 
-Things you may want to cover:
+##【概要】
+大阪市オーパスサイトでの体育館の予約をLINEbotを使って自動予約プログラムを組みました。
 
-* Ruby version
+##【これを作成しようと思った理由】
+なにか自分で見つけた課題を解決してみたいという思いから作成しました。
 
-* System dependencies
+##【予約をする際の工程】
+・サイトにログイン
+・スポーツ種目・体育館選択
+・日付を選択（抽選で二ヶ月後の枠に申し込む仕様）
+ ⇨土日のみの活動なので、その曜日に絞り込む。
+※当選確率を上げるために、共に運営してる仲間数人で申し込むのですが、その際に当選日をそれぞれ満遍なく振り分けたいので、土日をランダムに申し込む。
+これらの過程を自動化しました。
 
-* Configuration
+###【ターゲットユーザー】
+社会人サークルを運営し、オーパスシステムを使用する人。
 
-* Database creation
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+###【開発環境】
+・Rails 6.0.3.4
+・HTML,CSS,JavaScript,Ruby,
+・PostgreSQL
+・Ruby on Rails
+・VSCode
+・heroku
+・LINE Messaging API
+・Google Chrome バージョン: 89.0.4389.90
+・selenium-webdriver

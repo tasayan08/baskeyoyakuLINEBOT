@@ -17,6 +17,7 @@ class LinebotController < ApplicationController
       }
     end
 
+
     def callback
       body = request.body.read
 
@@ -27,7 +28,6 @@ class LinebotController < ApplicationController
       end
       events = client.parse_events_from(body)
 
-
       events.each do |event|
 
         if event.message["text"] == "予約"
@@ -36,8 +36,9 @@ class LinebotController < ApplicationController
           event.message["text"] == "確認"
           message = baskeyoyaku_index
         else
-          message="抽選申し込み予約は「予約」"+"\n"+"抽選確認は「確認」"+"\n"+"を送信して下さい。"
+          message="抽選申し込み予約は「予約」"+"\n"+"抽選確認は「確認」"+"\n"+"を送信して下さい。"+"\n"+"「予約」送信後、30秒程立ちましたら"+"「確認」を送信してください。"
         end
+
         case event
         when Line::Bot::Event::Message
           case event.type
@@ -52,19 +53,15 @@ class LinebotController < ApplicationController
       end
       head :ok
 
-      
 
     end
 
+  def yoyaku_massage
+    mess= "予約しました。"+"\n"+"「確認」と打って確かめてください。"
+    return mess
+  end
 
-    def example
-      sleep(5)
-      return "実験終了"
-    end
-
-    def baskeyoyaku_login
-
-
+  def baskeyoyaku_login
       #Chrome用のドライバ
       driver = Selenium::WebDriver.for :chrome
 
@@ -75,17 +72,15 @@ class LinebotController < ApplicationController
       element = driver.find_element(:id, 'txtRiyoshaCode')
       element.send_keys ENV["riyhoshaCode_"+"#{params["events"][0]["source"]["userId"]}"]
       # パスワードを入力
-      
+
       element2 = driver.find_element(:id, 'txtPassWord')
       element2.send_keys ENV["PASSWORD_"+"#{params["events"][0]["source"]["userId"]}"]
 
       # 決定ボタンをクリック
       element3 = driver.find_element(:class, 'loginbtn')
       element3.click
-
-
-
-# ログイン失敗時にメッセージを返す場合は以下コメントアウトを流用
+      
+      # ログイン失敗時にメッセージを返す場合は以下コメントアウトを流用
 
       # error = driver.find_element(:class, 'a-alert-content')
       # if error.text == "このEメールアドレスを持つアカウントが見つかりません" then
@@ -94,41 +89,38 @@ class LinebotController < ApplicationController
       #   driver.quit
       #   return message
       # end
-      
 
-      # こここここここここ
       #抽選申し込みクリック
       elements = driver.find_elements(:class, "bgpng")
       elements[3].click
-      sleep(0.5)
+      # sleep(0.1)
       #利用目的クリック
       element4 = driver.find_element(:xpath, '//*[@id="mmaincolumn"]/div/table/tbody/tr[2]/td')
       element4.click
-      sleep(0.5)
-      # こここここここここ
-
-
-
+      # sleep(0.1)
 
       #バスケットボール選択
       element5 = driver.find_element(:xpath, '//*[@id="mmaincolumn"]/div/table/tbody/tr[3]/td')
       element5.click
-      sleep(0.5)
+      # sleep(0.1)
       #バスケットボール選択【2】
       driver.find_element(:xpath,'//*[@id="mmaincolumn"]/div/table/tbody/tr[2]/td').click
-      sleep(0.5)
+      # sleep(0.1)
       #天王寺スポーツセンター選択
-      driver.find_element(:xpath, '//*[@id="mmaincolumn"]/div/table/tbody/tr[13]/td[1]').click
-      sleep(0.5)
+      # driver.find_element(:xpath, '//*[@id="mmaincolumn"]/div/table/tbody/tr[13]/td[1]').click
+
+      #城東スポーツセンター選択
+      driver.find_element(:xpath, '//*[@id="mmaincolumn"]/div/table/tbody/tr[21]/td[1]').click
+      # sleep(0.1)
+
       #「次に進む」クリック
       driver.find_element(:xpath, '//*[@id="pagerbox"]/a[2]/img').click
-      sleep(0.5)
       #「時間帯任意」クリック
       driver.find_element(:xpath, '//*[@id="mmaincolumn"]/div/table/tbody/tr/td/table/tbody/tr[1]/td/div/a/img').click
-      sleep(0.5)
       #「抽選申し込み内容」クリック
       driver.find_element(:xpath, '//*[@id="riyoDate"]').click
-      sleep(0.5)
+
+      
         # ーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
       
         # 変数をまとめて定義する場所
@@ -170,36 +162,34 @@ class LinebotController < ApplicationController
         hinichi.push(day.day)
       end
 
-    hinichi.shuffle.each do |t|
 
-      xid='//*[@id="riyoDate"]/option['+t.to_s+']'
-        #「施設」選択⇨セレクタの「第一体育場1/2」選択
-        driver.find_element(:xpath, '//*[@id="shisetsu"]').click
-        driver.find_element(:xpath, '//*[@value="271004_001_21_01_01_0000"]').click
+                hinichi.shuffle.each do |t|
 
-          driver.find_element(:xpath, xid).click
-          driver.find_element(:xpath, '//*[@id="pagerbox"]/a[2]/img').click
+                  xid='//*[@id="riyoDate"]/option['+t.to_s+']'
+                    #「施設」選択⇨セレクタの「第一体育場1/2」選択
+                    driver.find_element(:xpath, '//*[@id="shisetsu"]').click
+                    driver.find_element(:xpath, '//*[@id="shisetsu"]/option[2]').click
+                    # driver.find_element(:xpath, '//*[@value="271004_001_21_01_01_0000"]').click
 
-          # 予約画面に遷移できないケースが2種類。1予約済みと2満員、どちらも同じTITLEのページに足踏みするので、それを利用して、each文をbreakする。
-          if driver.title == "公共施設予約システム（時間帯任意入力）"
-            # break → each文を進める。
-          else
-            driver.find_element(:xpath, '//*[@id="mmaincolumn"]/div/p[2]/a/img').click
-            # "公共施設予約システム（申込内容確認）"というタイトルのページに遷移すればOK
-            driver.find_element(:xpath, '//*[@id="popup_ok"]').click
-          end
+                      driver.find_element(:xpath, xid).click
+                      driver.find_element(:xpath, '//*[@id="pagerbox"]/a[2]/img').click
 
-          driver.get "https://reserve.opas.jp/osakashi/chusen/ChusenKubunSelect.cgi"
+                      # 予約画面に遷移できないケースが2種類。1予約済みと2満員、どちらも同じTITLEのページに足踏みするので、それを利用して、each文をbreakする。
+                      if driver.title == "公共施設予約システム（時間帯任意入力）"
+                        # break → each文を進める。
+                      else
+                        driver.find_element(:xpath, '//*[@id="mmaincolumn"]/div/p[2]/a/img').click
+                        # "公共施設予約システム（申込内容確認）"というタイトルのページに遷移すればOK
+                        driver.find_element(:xpath, '//*[@id="popup_ok"]').click
+                      end
 
-    end
+                      driver.get "https://reserve.opas.jp/osakashi/chusen/ChusenKubunSelect.cgi"
+                end
+                mess= "予約しました。"+"\n"+"「確認」と打って確かめてください。"
+                return mess
+  end
 
-      
 
-
-    mess = "予約しました。\n「確認」と打って確かめてください。"
-    return mess
-    
-    end
 
 
     def baskeyoyaku_index
@@ -242,19 +232,18 @@ class LinebotController < ApplicationController
 
 
 
-   mess=""
+      mess=""
 
-   for i in 3..sum
-     tr_id='//*[@id="mmaincolumn"]/div/div/table/tbody/tr['+i.to_s+']/td[4]'
-     tr_id2='//*[@id="mmaincolumn"]/div/div/table/tbody/tr['+i.to_s+']/td[2]'
-     
-     text1=driver.find_element(:xpath, tr_id).text
-     text2=driver.find_element(:xpath, tr_id2).text
+      for i in 3..sum
+        tr_id='//*[@id="mmaincolumn"]/div/div/table/tbody/tr['+i.to_s+']/td[4]'
+        tr_id2='//*[@id="mmaincolumn"]/div/div/table/tbody/tr['+i.to_s+']/td[2]'
+        
+        text1=driver.find_element(:xpath, tr_id).text
+        text2=driver.find_element(:xpath, tr_id2).text
 
-     mess=mess+"\n"+text2+"\n"+text1+"\n"
-   end
-
-   return mess
+        mess=mess+"\n"+text2+"\n"+text1+"\n"
+      end
+      return mess
 
     end
 
